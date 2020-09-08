@@ -16,12 +16,22 @@ var commentRoutes=require("./routes/comments"),
 	campgroundRoutes=require("./routes/campgrounds"),
 	indexRoutes=require("./routes/index");
 
-
-mongoose.connect('mongodb://localhost:27017/db_name', {
+const pass=process.env.PASSWORD;
+// mongoose.connect('mongodb://localhost:27017/db_name', {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+//   useFindAndModify:false
+// });
+mongoose.connect(`mongodb+srv://touquir:${pass}@cluster0.0yhpg.mongodb.net/<dbname>?retryWrites=true&w=majority`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify:false
+}).then(()=>{
+  console.log("DB started");
+}).catch(err=>{
+  console.log(err.message);
 });
+
 
 app.set("view engine","ejs");
 app.use(bodyParser.urlencoded({extended: true}));
