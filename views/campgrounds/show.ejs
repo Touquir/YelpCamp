@@ -1,0 +1,177 @@
+<%- include("../partials/header") %>
+<style type="text/css">
+	body{background: #ffcccc;}
+</style>
+<div class="container" style="margin-top:10px;">
+	<div class="row">
+		<div class="col-md-3">
+			<h1 ><%=campground.name%></h1>
+			<div class="list-group">
+				<li class="list-group-item active">
+					<h4>Facilities</h4>
+					WiFi, Restaurants, Safety Gears, Camping Tools
+				</li>
+				<li class="list-group-item">
+					<h4>Address</h4>
+					<%=campground.place%>	
+				</li>
+				<li class="list-group-item">
+					<h4>Contact</h4>
+					<p><%=campground.author.username%>- 
+					+919999999999
+					</p>
+				</li> 
+				<li class="list-group-item" style="padding: 0">
+					<h4 style="padding-left: 23px">Map</h4>
+					<div id="map"></div>
+				</li>
+			</div>
+		</div>
+		<div class="col-md-9">
+			<div class="thumbnail">
+				<img src="<%=campground.image%>" class="img-responsive">
+				<div class="caption-full">
+					<h4 class="pull-right">$<%=campground.price%>/night</h4>
+					<h3><a><%=campground.name%></a></h3>
+					<p><%=campground.description%></p>
+					<p>
+						<em>Submitted by: <%=campground.author.username%></em>
+					</p>
+					<div style="margin-top: -20px;">
+                        <form action="/campgrounds/<%= campground._id %>/like" method="POST">
+                            <div class="btn-group">
+                                <% if (currentUser && campground.likes.some(function (like) {
+                                    return like.equals(currentUser._id)
+                                })) { %>
+                                <button  class="btn" id="Heart">
+                                    <i class="fa fa-heart" style="color: red;"></i><%= campground.likes.length %>
+                                </button>
+                                <% } else { %>
+                                <button class="btn" id="Heart">
+                                    <i class="fa fa-heart"></i><%= campground.likes.length %>
+                                </button>
+                                <% } %>
+                            </div>
+                        </form>
+                    </div>
+					<%if(currentUser && campground.author.id.equals(currentUser._id)){%>
+						<div class="pull-right" style="margin-top: -50px;">
+							<a  class="btn btn-warning" href="/campgrounds/<%=campground._id%>/edit">Edit</a>
+							<form id="delete-form" action="/campgrounds/<%=campground._id%>?_method=DELETE" method="POST">
+								<button class="btn btn-danger">Delete</button>
+							</form>
+						</div>
+					<%}%>
+				</div>
+			</div>
+			<div class="well" style="background: #C0C0C0; padding: 15px 10px 10px 10px; border: 1px solid black">
+				<!--Setting up the add new comment button that is used for collapsing-->
+				<div class="text-right">
+					<a class="btn btn-success pull-right" role="button" data-toggle="collapse" href="#collapseComment" aria-expanded="false" aria-controls="collapseComment">
+					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add new comment</a>
+				</div>
+
+				<!--Comment section title-->
+				<h4><strong>Comments <span class="glyphicon glyphicon glyphicon-comment" aria-hidden="true"></span></strong></h4>
+
+				<!--Collapse Add a comment form START-->
+				<div class="collapse" id="collapseComment">
+					<div class="well" style="border-left: 5px solid #00C851;">
+					<% if(!currentUser) { %>
+					<!--If the user is not logged in, direct him to the login page-->
+					<h5>You need to login before you can comment. <a href="/login">Click here</a> to go to the login page.</h5>
+					<% } %>
+					<% if(currentUser) { %>
+					<!--If the user is logged in, show the new comment form-->
+					<h4>Write your comment <span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true"></span></h4>
+					<form id="add-comment-form" action="/campgrounds/<%= campground._id %>/comments" method="POST">
+					<div class="form-group">
+						<input class="form-control" type="text" disabled value="<%= currentUser.username %>">
+					</div>
+					<div class="form-group">
+						<textarea class="form-control" name="comment[text]" placeholder="Write your comment..." form="add-comment-form" rows="5" cols="70"></textarea>
+					</div>
+					<div class="form-group">
+						<button class="btn btn-success btn-sm">Comment <span class="glyphicon glyphicon-comment" aria-hidden="true"></span></button>
+					</div>
+					</form>
+					<% } %>
+				</div>
+			</div>
+		      <!--Collapse Add a comment form END-->
+
+		      <hr>
+
+		      <!--Check if there are comments, if there are none say no comments.-->
+		        <% if (campground.comments.length === 0) { %>
+		      <em style="color: grey;">No comments yet.</em>
+		        <% } %>
+
+		      <!--Display comments by looping through them-->
+		        <% campground.comments.forEach(function(comment) { %>
+		      <div class="row">
+		        <div class="col-md-12">
+		          <strong>
+		              <% if (currentUser && currentUser._id.equals(comment.author.id)) { %>
+		            <!--If the current user owns the comment, change the color of the user icon-->
+		            <span style="color: orange;" class="glyphicon glyphicon-user" aria-hidden="true"></span>
+		              <% } else { %>
+		            <!--Else just display it black-->
+		            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+		              <% } %>
+		            <!--Print out the author username-->
+		              <%= comment.author.username %>
+		          </strong>
+		          <!--Show when the comment was made-->
+		          
+		          <!--Printing the comment-->
+		          <p><%= comment.text %></p>
+		          <!--If the visitor is logged in and the owner of the comment, show the edit and delete buttons-->
+		            <% if (currentUser && currentUser._id.equals(comment.author.id)) { %>
+		          <!--Edit button used for collapsing the edit comment form-->
+		          <a class="btn btn-xs btn-warning" role="button" data-toggle="collapse" href="#collapseEdit<%= comment._id %>" aria-expanded="false" aria-controls="collapse<%= comment._id %>">
+		            Edit</a>
+		          <!--Delete comment button-->
+		          <form id="delete-form" action="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>?_method=DELETE" method="POST" style="display: inline;">
+		            <button class="btn btn-xs btn-danger">Delete</button>
+		          </form>
+		          <!--Edit comment form-->
+		          <div class="collapse" id="collapseEdit<%= comment._id %>">
+		            <div class="well" style="border-left: 5px solid #ffbb33; margin-top: 15px;">
+		              <h4>Edit your comment <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></h4>
+		              <form id="edit-comment-form<%= comment._id %>" action="/campgrounds/<%= campground._id %>/comments/<%= comment._id %>?_method=PUT" method="POST">
+		                <div class="form-group">
+		                  <input class="form-control" type="text" disabled value="<%= currentUser.username %>">
+		                </div>
+		                <div class="form-group">
+		                  <textarea class="form-control" name="comment[text]" placeholder="Your comment text..." form="edit-comment-form<%= comment._id %>" rows="5" cols="70"><%= comment.text %></textarea>
+		                </div>
+		                <div class="form-group">
+		                  <button class="btn btn-warning btn-sm">Edit comment <span class="glyphicon glyphicon-comment" aria-hidden="true"></span></button>
+		                </div>
+		              </form>
+		            </div>
+		          </div>
+		            <% } %>
+		          <hr>
+		        </div>
+		      </div>
+		        <% }) %>
+		    </div>
+		</div>   
+	</div>
+</div>
+<script>
+	var camp=<%-JSON.stringify(campground)%>;
+	mapboxgl.accessToken = 'pk.eyJ1IjoidG91cXVpciIsImEiOiJja2U2M2U2ZDMwejY2MnNsNnc2dzdpbGQ3In0.GflCPcfZJ1WXM615gcBp0Q';
+	var map = new mapboxgl.Map({
+	container: 'map', // container id
+	style: 'mapbox://styles/mapbox/streets-v11', // style URL
+	center: camp.coordinates, // starting position [lng, lat]
+	zoom: 9 // starting zoom
+	});
+	var marker = new mapboxgl.Marker()
+	.setLngLat(camp.coordinates)
+	.addTo(map);
+</script>
+<%- include("../partials/footer") %>

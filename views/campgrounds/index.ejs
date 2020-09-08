@@ -1,0 +1,50 @@
+<%- include("../partials/header") %>
+<style type="text/css">
+	body{
+		background: #ffcccc;
+	}
+</style>
+
+<header class="jumbotron">
+	<div class="container" style="color: #ff3333;">
+		<h1 style="margin-top: 80px; font-size: 70px">Welcome to YelpCamp!</h1>
+	</div>
+	<p style="color: white; font-size: 30px">View our campgrounds around the world</p>
+	<p><a href="/campgrounds/new">
+	      <button class="btn btn-info">
+	        Add New Campground
+	      </button>
+	    </a>
+	</p>
+</header>
+
+<div class="container">
+	<form class="navbar-form navbar-center" action="/campgrounds" method="GET" style="height: 50px;">
+		<div class="input-group">
+		    <input type="text" class="form-control" name="search" placeholder="Search Campgrounds..." style="">
+		    <div class="input-group-btn">
+		      <button class="btn btn-default" type="submit">
+		        <i class="fa fa-search"></i>
+		      </button>
+		    </div>
+		</div>
+	</form>
+</div>
+
+<div class="container">
+	<div class="row" style="display:flex; flex-wrap: wrap;">
+		<% campgrounds.forEach(function(x){ %>
+			<div class="col-md-3 col-sm-6">
+				<div class="thumbnail">
+					<a href="/campgrounds/<%=x._id%>">
+						<img src="<%=x.image%>">
+					</a>
+				</div>
+				<div class="caption" style="text-align: center;">
+					<h3><%=x.name%></h3>
+				</div>
+			</div>
+		<%})%>
+	</div>
+</div>
+<%- include("../partials/footer") %>

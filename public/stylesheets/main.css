@@ -1,0 +1,37 @@
+.thumbnail img{
+	width: 100%;
+}
+.thumbnail{
+	padding: 0;
+}
+.thumbnail .caption-full{
+	padding: 9px;
+}
+#delete-form{
+	display: inline;
+}
+/* Google Maps */
+#map {
+    height: 400px;
+    width: 100%;
+}
+.navbar-brand {
+  font-size: 27px;
+}
+#navbarSupportedContent{
+	font-size: 20px;
+}
+#Heart{
+	background: #ffcccc;
+	font-size: 40px; 
+}
+.jumbotron {
+	text-shadow: 2px 2px 1px black;
+	background: linear-gradient( rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1) ), url(https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=d9df10d159cc11074d9a7996e8aca442&auto=format&fit=crop&w=1500&q=80);
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+	text-align: center;
+	margin-top: 0px;
+	margin-bottom: 10px;
+}
