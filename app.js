@@ -17,11 +17,7 @@ var commentRoutes=require("./routes/comments"),
 	indexRoutes=require("./routes/index");
 
 const pass=process.env.PASSWORD;
-// mongoose.connect('mongodb://localhost:27017/db_name', {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-//   useFindAndModify:false
-// });
+
 mongoose.connect(`mongodb+srv://touquir:${pass}@cluster0.0yhpg.mongodb.net/<dbname>?retryWrites=true&w=majority`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -38,7 +34,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname+"/public"));
 app.use(methodOverride("_method"));
 app.use(flash());
-// seedDB();
+
 
 //PASSPORT CONFIGURATIONS
 
